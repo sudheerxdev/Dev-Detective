@@ -1,4 +1,8 @@
-# DevDetective - Vercel Production Build
+# DevDetective 
+
+## Live Demo 
+
+https://dev-detective-t5y7.vercel.app/
 
 DevDetective is a GitHub Portfolio Analyzer & Enhancer optimized for Vercel serverless deployment.
 It provides recruiter-style scoring, risk detection, roadmap generation, and downloadable reports using real GitHub data.
