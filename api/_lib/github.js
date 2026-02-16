@@ -189,11 +189,25 @@ async function fetchRepoDeepMeta(owner, repo, token, signal, partial) {
 
 async function fetchContributionSignals(username, token, signal) {
   const [prCount, issueCount] = await Promise.all([
-    fetchSearchCount(`author:${username} type:pr`, token, signal),
-    fetchSearchCount(`author:${username} type:issue`, token, signal)
+    fetchSearchCountWithFallback(`author:${username} type:pr`, token, signal),
+    fetchSearchCountWithFallback(`author:${username} type:issue`, token, signal)
   ]);
 
   return { prCount, issueCount };
+}
+
+async function fetchSearchCountWithFallback(query, token, signal) {
+  try {
+    return await fetchSearchCount(query, token, signal);
+  } catch (error) {
+    if (error.name === "AbortError") {
+      throw error;
+    }
+
+    // GitHub Search can return 422 for valid-but-unsearchable users.
+    // Do not fail the whole analysis when contribution counts are unavailable.
+    return 0;
+  }
 }
 
 async function fetchSearchCount(query, token, signal) {
