@@ -105,7 +105,4 @@ vercel dev
 - No sensitive token exposed to browser
 - Security headers configured via `vercel.json`
 
-## Notes
 
-- Commit consistency is approximated via `pushed_at` metadata.
-- Deep README/language checks are limited to top repos for performance and GitHub quota efficiency.
