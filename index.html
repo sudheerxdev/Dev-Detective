@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0856d6" />
+    <meta
+        name="description"
+        content="DevDetective analyzes GitHub portfolios with recruiter-style scoring, strengths, red flags, and actionable suggestions."
+    />
+    <meta property="og:title" content="DevDetective | GitHub Portfolio Analyzer" />
+    <meta property="og:description" content="Transform your GitHub profile into a recruiter-ready portfolio." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="Images/logo.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="DevDetective | GitHub Portfolio Analyzer" />
+    <meta name="twitter:description" content="Production-grade GitHub portfolio analysis." />
+    <meta name="twitter:image" content="Images/logo.png" />
+    <title>DevDetective | GitHub Portfolio Analyzer</title>
+
+    <link rel="icon" type="image/png" href="Images/favicon-32x32.png" />
+    <link rel="apple-touch-icon" href="Images/apple-touch-icon.png" />
+    <link rel="manifest" href="manifest.json" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="landing.css" />
+
+    <script>
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("sw.js").catch(() => {});
+            });
+        }
+    </script>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <img src="Images/logo.png" alt="DevDetective" class="nav-logo" />
+                <span class="nav-title">DevDetective</span>
+            </div>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#hero" class="nav-link" data-section="1">Home</a></li>
+                <li><a href="#features" class="nav-link" data-section="2">Features</a></li>
+                <li><a href="#scoring" class="nav-link" data-section="3">How It Works</a></li>
+                <li><a href="#insights" class="nav-link" data-section="4">Insights</a></li>
+                <li><a href="#roadmap" class="nav-link" data-section="5">Roadmap</a></li>
+                <li><a href="#benefits" class="nav-link" data-section="6">Benefits</a></li>
+                <li><a href="#analytics" class="nav-link" data-section="7">Analytics</a></li>
+                <li><a href="#report" class="nav-link" data-section="8">Reports</a></li>
+                <li><a href="#security" class="nav-link" data-section="9">Security</a></li>
+                <li><a href="#cta" class="nav-link" data-section="10">Start Now</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="page-wrapper">
+        <!-- Section 1: Hero -->
+        <section class="landing-section section-1" id="hero">
+            <div class="section-container">
+                <div class="hero-content">
+                    <span class="section-badge">Welcome</span>
+                    <h1 class="hero-title">Transform Your GitHub Profile<br>Into A Recruiter-Ready Portfolio</h1>
+                    <p class="hero-subtitle">Get objective, AI-powered analysis of your GitHub presence. Understand what recruiters really see and actionable improvements to stand out.</p>
+                    <div class="hero-cta">
+                        <a href="analyzer.html" class="btn btn-primary btn-lg">Start Analysis Now</a>
+                        <a href="#features" class="btn btn-secondary btn-lg">Learn More</a>
+                    </div>
+                    <div class="hero-metrics">
+                        <div class="metric">
+                            <strong>10M+</strong>
+                            <span>GitHub Profiles Analyzed</span>
+                        </div>
+                        <div class="metric">
+                            <strong>98%</strong>
+                            <span>Accuracy Rate</span>
+                        </div>
+                        <div class="metric">
+                            <strong>50K+</strong>
+                            <span>Active Users</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <img src="Images/mascot-detective.svg" alt="DevDetective detective" class="hero-mascot" />
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Key Features -->
+        <section class="landing-section section-2" id="features">
+            <div class="section-container">
+                <h2 class="section-title">Powerful Features Built For Success</h2>
+                <p class="section-subtitle">Everything you need to analyze and improve your GitHub portfolio</p>
+                <div class="features-grid">
+                    <div class="feature-card fade-in" style="--delay: 0.1s">
+                        <div class="feature-icon">📊</div>
+                        <h3>Real-Time Scoring</h3>
+                        <p>Get objective portfolio scores (0-100) based on weighted recruitment metrics and GitHub signals</p>
+                    </div>
+                    <div class="feature-card fade-in" style="--delay: 0.2s">
+                        <div class="feature-icon">🚩</div>
+                        <h3>Risk Detection</h3>
+                        <p>Identify hidden risks and red flags that could impact recruiter perception of your profile</p>
+                    </div>
+                    <div class="feature-card fade-in" style="--delay: 0.3s">
+                        <div class="feature-icon">💡</div>
+                        <h3>Smart Insights</h3>
+                        <p>Receive AI-powered recommendations tailored to your coding patterns and profile strengths</p>
+                    </div>
+                    <div class="feature-card fade-in" style="--delay: 0.4s">
+                        <div class="feature-icon">🎯</div>
+                        <h3>Career Roadmap</h3>
+                        <p>Get personalized improvement roadmap with concrete steps to level up your portfolio</p>
+                    </div>
+                    <div class="feature-card fade-in" style="--delay: 0.5s">
+                        <div class="feature-icon">📥</div>
+                        <h3>Downloadable Reports</h3>
+                        <p>Export comprehensive markdown reports to share with mentors or include in applications</p>
+                    </div>
+                    <div class="feature-card fade-in" style="--delay: 0.6s">
+                        <div class="feature-icon">🔄</div>
+                        <h3>Live GitHub Integration</h3>
+                        <p>Real-time analysis using GitHub REST & GraphQL APIs with no manual data entry required</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Scoring System -->
+        <section class="landing-section section-3" id="scoring">
+            <div class="section-container">
+                <h2 class="section-title">How Our Scoring System Works</h2>
+                <p class="section-subtitle">Transparent, weighted analysis based on recruiter criteria</p>
+                <div class="scoring-content">
+                    <div class="scoring-visual">
+                        <div class="score-demo">
+                            <div class="score-ring-demo" style="--score: 78%">
+                                <span>78</span>
+                            </div>
+                            <p>Portfolio Score</p>
+                        </div>
+                    </div>
+                    <div class="scoring-details">
+                        <div class="scoring-item fade-in" style="--delay: 0.1s">
+                            <span class="scoring-label">Repository Quality</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 85%"></div>
+                            </div>
+                            <span class="progress-value">85%</span>
+                        </div>
+                        <div class="scoring-item fade-in" style="--delay: 0.2s">
+                            <span class="scoring-label">Consistency</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 72%"></div>
+                            </div>
+                            <span class="progress-value">72%</span>
+                        </div>
+                        <div class="scoring-item fade-in" style="--delay: 0.3s">
+                            <span class="scoring-label">Collaboration</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 65%"></div>
+                            </div>
+                            <span class="progress-value">65%</span>
+                        </div>
+                        <div class="scoring-item fade-in" style="--delay: 0.4s">
+                            <span class="scoring-label">Contribution Impact</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 88%"></div>
+                            </div>
+                            <span class="progress-value">88%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Recruiter Insights -->
+        <section class="landing-section section-4" id="insights">
+            <div class="section-container">
+                <h2 class="section-title">What Recruiters Actually See</h2>
+                <p class="section-subtitle">Get authentic recruiter-style feedback on your portfolio</p>
+                <div class="insights-showcase">
+                    <div class="insight-box fade-in" style="--delay: 0.1s">
+                        <h4>💪 Strengths</h4>
+                        <ul>
+                            <li>Strong open source contributions</li>
+                            <li>Consistent development activity</li>
+                            <li>Well-documented projects</li>
+                        </ul>
+                    </div>
+                    <div class="insight-box fade-in" style="--delay: 0.2s">
+                        <h4>⚠️ Red Flags</h4>
+                        <ul>
+                            <li>Infrequent commit patterns</li>
+                            <li>Outdated project documentation</li>
+                            <li>Limited collaboration experience</li>
+                        </ul>
+                    </div>
+                    <div class="insight-box fade-in" style="--delay: 0.3s">
+                        <h4>🎯 Hidden Risks</h4>
+                        <ul>
+                            <li>Portfolio gaps in recent months</li>
+                            <li>Limited tech stack diversity</li>
+                            <li>Minimal community engagement</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Improvement Roadmap -->
+        <section class="landing-section section-5" id="roadmap">
+            <div class="section-container">
+                <h2 class="section-title">Your Personalized Improvement Roadmap</h2>
+                <p class="section-subtitle">Actionable steps to level up your GitHub presence</p>
+                <div class="roadmap-timeline">
+                    <div class="timeline-item fade-in" style="--delay: 0.1s">
+                        <span class="timeline-number">1</span>
+                        <h4>Week 1-2</h4>
+                        <p>Start contributing to open source projects aligned with your goals</p>
+                    </div>
+                    <div class="timeline-item fade-in" style="--delay: 0.2s">
+                        <span class="timeline-number">2</span>
+                        <h4>Week 3-4</h4>
+                        <p>Improve documentation and add README files to existing projects</p>
+                    </div>
+                    <div class="timeline-item fade-in" style="--delay: 0.3s">
+                        <span class="timeline-number">3</span>
+                        <h4>Month 2</h4>
+                        <p>Build portfolio projects showcasing diverse tech stack</p>
+                    </div>
+                    <div class="timeline-item fade-in" style="--delay: 0.4s">
+                        <span class="timeline-number">4</span>
+                        <h4>Month 3+</h4>
+                        <p>Establish consistent contribution patterns and community presence</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: Key Benefits -->
+        <section class="landing-section section-6" id="benefits">
+            <div class="section-container">
+                <h2 class="section-title">Why Choose DevDetective?</h2>
+                <p class="section-subtitle">Stand out from thousands of developers</p>
+                <div class="benefits-grid">
+                    <div class="benefit-item fade-in" style="--delay: 0.1s">
+                        <div class="benefit-number">1</div>
+                        <h4>Transparent Methodology</h4>
+                        <p>See exactly how your score is calculated with detailed breakdowns</p>
+                    </div>
+                    <div class="benefit-item fade-in" style="--delay: 0.2s">
+                        <div class="benefit-number">2</div>
+                        <h4>Recruiter Lens</h4>
+                        <p>Built by hiring managers to match real recruitment evaluation criteria</p>
+                    </div>
+                    <div class="benefit-item fade-in" style="--delay: 0.3s">
+                        <div class="benefit-number">3</div>
+                        <h4>Instant Feedback</h4>
+                        <p>Get results in seconds with real-time GitHub data integration</p>
+                    </div>
+                    <div class="benefit-item fade-in" style="--delay: 0.4s">
+                        <div class="benefit-number">4</div>
+                        <h4>Actionable Insights</h4>
+                        <p>Concrete recommendations you can act on immediately</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 7: Advanced Analytics -->
+        <section class="landing-section section-7" id="analytics">
+            <div class="section-container">
+                <h2 class="section-title">Advanced Analytics Dashboard</h2>
+                <p class="section-subtitle">Visual breakdown of your GitHub portfolio metrics</p>
+                <div class="analytics-showcase">
+                    <div class="analytics-card fade-in" style="--delay: 0.1s">
+                        <h4>Repository Ranking</h4>
+                        <p>See which of your repositories rank highest in recruiter eyes</p>
+                        <div class="chart-placeholder">📊</div>
+                    </div>
+                    <div class="analytics-card fade-in" style="--delay: 0.2s">
+                        <h4>Contribution Timeline</h4>
+                        <p>Visualize your coding activity patterns and consistency</p>
+                        <div class="chart-placeholder">📈</div>
+                    </div>
+                    <div class="analytics-card fade-in" style="--delay: 0.3s">
+                        <h4>Technology Stack</h4>
+                        <p>Breakdown of your tech diversity and expertise areas</p>
+                        <div class="chart-placeholder">🔧</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 8: Downloadable Reports -->
+        <section class="landing-section section-8" id="report">
+            <div class="section-container">
+                <h2 class="section-title">Professional Reports</h2>
+                <p class="section-subtitle">Export and share comprehensive portfolio analysis</p>
+                <div class="report-features">
+                    <div class="report-item fade-in" style="--delay: 0.1s">
+                        <div class="report-icon">📄</div>
+                        <h4>Markdown Format</h4>
+                        <p>Download reports in markdown format for easy sharing</p>
+                    </div>
+                    <div class="report-item fade-in" style="--delay: 0.2s">
+                        <div class="report-icon">💼</div>
+                        <h4>Professional Presentation</h4>
+                        <p>Beautifully formatted reports suitable for recruiters and hiring managers</p>
+                    </div>
+                    <div class="report-item fade-in" style="--delay: 0.3s">
+                        <div class="report-icon">🔗</div>
+                        <h4>Easy Sharing</h4>
+                        <p>Share reports via email, LinkedIn, or include in job applications</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 9: Security & Privacy -->
+        <section class="landing-section section-9" id="security">
+            <div class="section-container">
+                <h2 class="section-title">Security & Privacy First</h2>
+                <p class="section-subtitle">Your data is safe with enterprise-grade security</p>
+                <div class="security-features">
+                    <div class="security-item fade-in" style="--delay: 0.1s">
+                        <span class="security-icon">🔐</span>
+                        <h4>Data Encryption</h4>
+                        <p>All data encrypted in transit and at rest with TLS 1.3</p>
+                    </div>
+                    <div class="security-item fade-in" style="--delay: 0.2s">
+                        <span class="security-icon">🛡️</span>
+                        <h4>No Data Storage</h4>
+                        <p>We never store your personal data - only what you explicitly request</p>
+                    </div>
+                    <div class="security-item fade-in" style="--delay: 0.3s">
+                        <span class="security-icon">✅</span>
+                        <h4>GitHub API Only</h4>
+                        <p>Analysis powered exclusively by public GitHub data and official APIs</p>
+                    </div>
+                    <div class="security-item fade-in" style="--delay: 0.4s">
+                        <span class="security-icon">📋</span>
+                        <h4>Privacy Compliant</h4>
+                        <p>GDPR and privacy regulations fully compliant</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 10: Call to Action -->
+        <section class="landing-section section-10" id="cta">
+            <div class="section-container cta-container">
+                <h2 class="cta-title">Ready to Transform Your Portfolio?</h2>
+                <p class="cta-subtitle">Join thousands of developers already using DevDetective</p>
+                <a href="analyzer.html" class="btn btn-primary btn-xl">Start Your Free Analysis</a>
+                <p class="cta-footer">Free • No sign-up required • Results in seconds</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>DevDetective</h4>
+                <p>Transform your GitHub profile into a recruiter-ready portfolio</p>
+            </div>
+            <div class="footer-section">
+                <h5>Quick Links</h5>
+                <ul>
+                    <li><a href="#hero">Home</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#cta">Get Started</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h5>Resources</h5>
+                <ul>
+                    <li><a href="#" target="_blank">GitHub</a></li>
+                    <li><a href="#" target="_blank">Documentation</a></li>
+                    <li><a href="#" target="_blank">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h5>Legal</h5>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 DevDetective. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="landing.js"></script>
+</body>
+</html>
