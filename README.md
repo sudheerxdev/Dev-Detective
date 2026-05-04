@@ -89,7 +89,6 @@ vercel dev
 - Input sanitization for usernames/URLs
 - API abuse protection with rate limiting
 - Graceful handling for invalid input, not found, network failures, and GitHub upstream failures
-- No sensitive token exposed to browser
-- Security headers configured via `vercel.json`
+
 
 
