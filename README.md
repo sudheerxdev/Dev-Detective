@@ -55,18 +55,6 @@ It provides recruiter-style scoring, risk detection, roadmap generation, and dow
 └── .env.example
 ```
 
-## Environment Variables
-
-Set in Vercel Project Settings -> Environment Variables.
-
-### Required (recommended strongly)
-
-- `GITHUB_TOKEN`: GitHub token for higher rate limits and GraphQL pinned repos
-
-### Optional (for distributed rate limiting)
-
-- `KV_REST_API_URL`
-- `KV_REST_API_TOKEN`
 
 
 
