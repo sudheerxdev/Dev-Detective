@@ -856,7 +856,9 @@ input:hover:not(:focus) {
     display: grid;
     place-items: center;
     background: conic-gradient(var(--ring-color) calc(var(--score-value) * 1%), var(--border) 0);
-    transition: background 220ms ease;
+    transition: background 480ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 8px 24px rgba(8, 86, 214, 0.15);
+    filter: drop-shadow(0 2px 8px rgba(8, 86, 214, 0.1));
 }
 
 .score-ring::before {
@@ -865,7 +867,7 @@ input:hover:not(:focus) {
     inset: 12px;
     border-radius: 50%;
     background: var(--surface);
-    border: 1px solid var(--border);
+    border: 2px solid var(--border);
 }
 
 .score-ring[data-level="good"] {
@@ -883,8 +885,21 @@ input:hover:not(:focus) {
 .score-value {
     position: relative;
     z-index: 1;
-    font-size: 1.6rem;
-    font-weight: 800;
+    font-size: 1.8rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    animation: countUp 800ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes countUp {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .premium-score-grid {
@@ -920,11 +935,12 @@ input:hover:not(:focus) {
 }
 
 .readiness-track {
-    margin-top: 0.6rem;
-    height: 8px;
+    margin-top: 0.7rem;
+    height: 10px;
     border-radius: 999px;
-    background: color-mix(in srgb, var(--accent) 14%, var(--surface-soft));
+    background: color-mix(in srgb, var(--accent) 12%, var(--surface-soft));
     overflow: hidden;
+    border: 1px solid var(--border);
 }
 
 .readiness-track span {
@@ -932,8 +948,9 @@ input:hover:not(:focus) {
     width: 0;
     height: 100%;
     border-radius: 999px;
-    background: linear-gradient(120deg, var(--accent), var(--accent-strong));
-    transition: width 280ms ease;
+    background: linear-gradient(90deg, var(--accent), var(--accent-strong));
+    transition: width 800ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 0 12px rgba(8, 86, 214, 0.3);
 }
 
 .subscore-grid {
@@ -959,10 +976,13 @@ input:hover:not(:focus) {
     display: inline-flex;
     align-items: center;
     border-radius: 999px;
-    padding: 0.22rem 0.55rem;
-    font-size: 0.7rem;
-    border: 1px solid;
+    padding: 0.28rem 0.7rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    border: 1.5px solid;
     white-space: nowrap;
+    transition: all 200ms ease;
+    letter-spacing: 0.01em;
 }
 
 .chip-neutral {
@@ -973,20 +993,25 @@ input:hover:not(:focus) {
 
 .chip-good {
     color: var(--good);
-    border-color: color-mix(in srgb, var(--good) 50%, var(--border));
-    background: color-mix(in srgb, var(--good) 12%, transparent);
+    border-color: color-mix(in srgb, var(--good) 60%, var(--border));
+    background: color-mix(in srgb, var(--good) 10%, transparent);
 }
 
 .chip-warn {
     color: var(--warn);
-    border-color: color-mix(in srgb, var(--warn) 55%, var(--border));
-    background: color-mix(in srgb, var(--warn) 12%, transparent);
+    border-color: color-mix(in srgb, var(--warn) 60%, var(--border));
+    background: color-mix(in srgb, var(--warn) 10%, transparent);
 }
 
 .chip-risk {
     color: var(--risk);
-    border-color: color-mix(in srgb, var(--risk) 55%, var(--border));
-    background: color-mix(in srgb, var(--risk) 12%, transparent);
+    border-color: color-mix(in srgb, var(--risk) 60%, var(--border));
+    background: color-mix(in srgb, var(--risk) 10%, transparent);
+}
+
+.chip:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(8, 86, 214, 0.15);
 }
 
 .insights-grid {
@@ -1018,38 +1043,49 @@ input:hover:not(:focus) {
 }
 
 .roadmap-list {
-    margin: 0.72rem 0 0;
+    margin: 0.8rem 0 0;
     padding: 0;
     list-style: none;
     display: grid;
-    gap: 0.58rem;
+    gap: 0.65rem;
     counter-reset: roadmap;
 }
 
 .roadmap-list li {
     counter-increment: roadmap;
-    border: 1px solid var(--border);
-    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
     background: var(--surface-soft);
-    padding: 0.6rem 0.65rem 0.6rem 2.2rem;
+    padding: 0.7rem 0.8rem 0.7rem 2.4rem;
     position: relative;
-    font-size: 0.82rem;
-    line-height: 1.45;
+    font-size: 0.84rem;
+    line-height: 1.5;
+    transition: all 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .roadmap-list li::before {
     content: counter(roadmap);
     position: absolute;
-    left: 0.6rem;
-    top: 0.6rem;
-    width: 1.1rem;
-    height: 1.1rem;
+    left: 0.7rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.3rem;
+    height: 1.3rem;
     border-radius: 50%;
     display: grid;
     place-items: center;
-    font-size: 0.66rem;
+    font-size: 0.68rem;
+    font-weight: 700;
     color: #fff;
-    background: linear-gradient(120deg, var(--accent), var(--accent-strong));
+    background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+    box-shadow: 0 4px 12px rgba(8, 86, 214, 0.25);
+}
+
+.roadmap-list li:hover {
+    transform: translateX(4px);
+    border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+    background: color-mix(in srgb, var(--accent) 5%, var(--surface-soft));
+    box-shadow: 0 6px 16px rgba(8, 86, 214, 0.12);
 }
 
 .transparency-note {
@@ -1101,21 +1137,40 @@ input:hover:not(:focus) {
 }
 
 .chart-panel {
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 0.55rem;
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    padding: 0.8rem;
     background: var(--surface-soft);
+    transition: all 200ms ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.chart-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent, rgba(8, 86, 214, 0.02), transparent);
+    pointer-events: none;
+}
+
+.chart-panel:hover {
+    border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
+    box-shadow: 0 8px 20px rgba(8, 86, 214, 0.08);
 }
 
 .chart-panel h3 {
-    margin: 0 0 0.35rem;
-    font-size: 0.82rem;
+    margin: 0 0 0.5rem;
+    font-size: 0.85rem;
     color: var(--muted);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
 }
 
 .chart-panel canvas {
     width: 100% !important;
-    height: 260px !important;
+    height: 280px !important;
 }
 
 .table-wrap {
@@ -1132,20 +1187,34 @@ input:hover:not(:focus) {
 .table-wrap th,
 .table-wrap td {
     border-bottom: 1px solid var(--border);
-    padding: 0.55rem;
+    padding: 0.7rem;
     text-align: left;
-    font-size: 0.78rem;
+    font-size: 0.80rem;
     vertical-align: middle;
+    transition: background-color 200ms ease;
 }
 
 .table-wrap th {
     color: var(--muted);
-    font-weight: 700;
+    font-weight: 800;
+    background: var(--surface-soft);
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+}
+
+.table-wrap tbody tr:hover {
+    background-color: color-mix(in srgb, var(--accent) 5%, var(--surface-soft));
 }
 
 .repo-link {
     font-weight: 700;
     text-decoration: none;
+    transition: all 200ms ease;
+}
+
+.repo-link:hover {
+    transform: translateX(2px);
 }
 
 .importance-wrap {
