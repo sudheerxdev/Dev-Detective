@@ -68,13 +68,7 @@ Set in Vercel Project Settings -> Environment Variables.
 - `KV_REST_API_URL`
 - `KV_REST_API_TOKEN`
 
-### Optional tuning
 
-- `RATE_LIMIT_MAX_REQUESTS` (default `30`)
-- `RATE_LIMIT_WINDOW_MS` (default `60000`)
-- `ANALYSIS_CACHE_TTL_MS` (default `300000`)
-- `GITHUB_CACHE_TTL_MS` (default `120000`)
-- `GITHUB_REQUEST_TIMEOUT_MS` (default `10000`)
 
 ## Deploy on Vercel
 
