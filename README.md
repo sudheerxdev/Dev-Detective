@@ -94,11 +94,7 @@ Vercel settings:
 
 ### Static frontend check
 
-```bash
-python3 -m http.server 5500
-```
 
-Open `http://localhost:5500`.
 
 ### Full Vercel-like local run (if Vercel CLI installed)
 
