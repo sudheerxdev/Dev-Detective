@@ -410,44 +410,54 @@ a:hover {
 }
 
 .tooltip {
-    width: 17px;
-    height: 17px;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
     display: inline-grid;
     place-items: center;
-    font-size: 0.62rem;
-    border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
+    font-size: 0.65rem;
+    font-weight: 800;
+    border: 1.5px solid color-mix(in srgb, var(--accent) 50%, var(--border));
     color: var(--accent-strong);
     background: color-mix(in srgb, var(--accent) 10%, var(--surface-soft));
     cursor: help;
     position: relative;
     user-select: none;
+    transition: all 200ms ease;
+}
+
+.tooltip:hover {
+    transform: scale(1.1);
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 15%, var(--surface-soft));
 }
 
 .tooltip::after {
     content: attr(data-tooltip);
     position: absolute;
     left: 50%;
-    bottom: calc(100% + 8px);
+    bottom: calc(100% + 12px);
     transform: translateX(-50%);
-    min-width: 210px;
-    max-width: 240px;
-    border-radius: 10px;
+    min-width: 220px;
+    max-width: 260px;
+    border-radius: 12px;
     border: 1px solid var(--border);
     background: var(--surface-solid);
     color: var(--text);
-    padding: 0.4rem 0.5rem;
-    font-size: 0.68rem;
-    line-height: 1.35;
-    box-shadow: var(--shadow);
+    padding: 0.5rem 0.65rem;
+    font-size: 0.70rem;
+    line-height: 1.5;
+    box-shadow: var(--shadow-lg);
     opacity: 0;
     pointer-events: none;
-    transition: opacity 140ms ease;
+    transition: opacity 200ms ease, transform 200ms ease;
     z-index: 3;
+    transform: translateX(-50%) translateY(8px);
 }
 
 .tooltip:hover::after {
     opacity: 1;
+    transform: translateX(-50%) translateY(0);
 }
 
 input {
@@ -683,56 +693,80 @@ input:hover:not(:focus) {
 }
 
 .avatar {
-    width: 76px;
-    height: 76px;
-    border-radius: 14px;
-    border: 1px solid var(--border);
+    width: 80px;
+    height: 80px;
+    border-radius: 16px;
+    border: 2px solid var(--border);
     object-fit: cover;
     background: var(--surface-soft);
+    transition: all 200ms ease;
+    box-shadow: 0 8px 20px rgba(8, 86, 214, 0.12);
+}
+
+.avatar:hover {
+    transform: scale(1.05);
+    border-color: var(--accent);
+    box-shadow: 0 12px 28px rgba(8, 86, 214, 0.2);
 }
 
 .profile-meta h2 {
     margin: 0;
-    font-size: 1.03rem;
+    font-size: 1.1rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
 }
 
 .profile-meta p {
-    margin: 0.2rem 0;
-    font-size: 0.85rem;
+    margin: 0.25rem 0;
+    font-size: 0.87rem;
+    font-weight: 500;
 }
 
 .profile-meta a {
-    font-size: 0.82rem;
+    font-size: 0.84rem;
+    font-weight: 600;
 }
 
 .profile-card #profileBio {
-    margin: 0.9rem 0 0.6rem;
-    font-size: 0.88rem;
-    line-height: 1.45;
+    margin: 1rem 0 0.7rem;
+    font-size: 0.90rem;
+    line-height: 1.6;
+    color: var(--text);
 }
 
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.55rem;
+    gap: 0.6rem;
 }
 
 .stat-card {
     background: var(--surface-soft);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 0.55rem 0.6rem;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 0.65rem 0.75rem;
     display: grid;
-    gap: 0.3rem;
+    gap: 0.35rem;
+    transition: all 200ms ease;
+}
+
+.stat-card:hover {
+    border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
+    background: color-mix(in srgb, var(--accent) 5%, var(--surface-soft));
 }
 
 .stat-card span {
     color: var(--muted);
-    font-size: 0.72rem;
+    font-size: 0.73rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
 }
 
 .stat-card strong {
-    font-size: 1rem;
+    font-size: 1.05rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
 }
 
 .card-title-row {
@@ -744,7 +778,9 @@ input:hover:not(:focus) {
 
 .section-title {
     margin: 0;
-    font-size: 1rem;
+    font-size: 1.05rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
 }
 
 .item-list,
@@ -905,33 +941,43 @@ input:hover:not(:focus) {
 .premium-score-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.55rem;
-    margin-top: 0.75rem;
+    gap: 0.65rem;
+    margin-top: 0.85rem;
 }
 
 .premium-score-item {
-    border: 1px solid var(--border);
-    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 13px;
     background: linear-gradient(145deg, var(--surface-soft), color-mix(in srgb, var(--surface-soft) 75%, var(--surface)));
-    padding: 0.55rem 0.62rem;
+    padding: 0.65rem 0.75rem;
     display: grid;
-    gap: 0.2rem;
+    gap: 0.25rem;
+    transition: all 200ms ease;
+}
+
+.premium-score-item:hover {
+    border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+    background: linear-gradient(145deg, color-mix(in srgb, var(--accent) 5%, var(--surface-soft)), color-mix(in srgb, var(--accent) 8%, var(--surface)));
 }
 
 .premium-score-item span {
     color: var(--muted);
-    font-size: 0.7rem;
+    font-size: 0.71rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
 }
 
 .premium-score-item strong {
-    font-size: 1rem;
-    letter-spacing: 0.02em;
+    font-size: 1.05rem;
+    letter-spacing: -0.01em;
+    font-weight: 800;
 }
 
 .premium-score-item small {
     color: var(--muted);
-    font-size: 0.68rem;
-    line-height: 1.35;
+    font-size: 0.70rem;
+    line-height: 1.4;
 }
 
 .readiness-track {
@@ -956,20 +1002,27 @@ input:hover:not(:focus) {
 .subscore-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.5rem;
-    margin-top: 0.95rem;
+    gap: 0.6rem;
+    margin-top: 1rem;
 }
 
 .subscore-item {
-    border: 1px solid var(--border);
-    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
     background: var(--surface-soft);
-    padding: 0.45rem 0.55rem;
+    padding: 0.55rem 0.7rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 0.45rem;
-    font-size: 0.74rem;
+    gap: 0.5rem;
+    font-size: 0.76rem;
+    font-weight: 600;
+    transition: all 200ms ease;
+}
+
+.subscore-item:hover {
+    border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
+    background: color-mix(in srgb, var(--accent) 5%, var(--surface-soft));
 }
 
 .chip {
@@ -1017,29 +1070,34 @@ input:hover:not(:focus) {
 .insights-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.8rem;
+    gap: 0.95rem;
 }
 
 .insights-grid h3 {
-    margin: 0;
-    font-size: 0.92rem;
+    margin: 0 0 0.6rem;
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
 }
 
 .recruiter-sim-card {
     background:
-        radial-gradient(circle at 90% 0%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 38%),
+        radial-gradient(circle at 90% 0%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 42%),
         var(--surface);
 }
 
 #aiRecruiterSummary {
-    margin: 0.5rem 0 0.2rem;
-    line-height: 1.5;
-    font-size: 0.84rem;
+    margin: 0.6rem 0 0.3rem;
+    line-height: 1.6;
+    font-size: 0.87rem;
+    font-weight: 500;
 }
 
 .career-title {
-    margin: 0.55rem 0 0.35rem;
-    font-size: 0.96rem;
+    margin: 0.65rem 0 0.45rem;
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
 }
 
 .roadmap-list {
