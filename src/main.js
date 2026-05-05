@@ -71,8 +71,6 @@ function bindEvents() {
       renderCharts(state.analysisResult, state, ui);
     }
   });
-
-  ui.downloadReportBtn.addEventListener("click", downloadMarkdownReport);
 }
 
 async function handleAnalyze() {
