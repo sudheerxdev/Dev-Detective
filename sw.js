@@ -15,9 +15,14 @@ const STATIC_ASSETS = [
     "./Images/logo.png",
     "./Images/favicon-32x32.png",
     "./Images/favicon-16x16.png",
+    "./Images/favicon.ico",
     "./Images/apple-touch-icon.png",
     "./Images/android-chrome-192x192.png",
-    "./Images/android-chrome-512x512.png"
+    "./Images/android-chrome-512x512.png",
+    "./Images/mascot-detective.svg",
+    "./Images/sun-icon.svg",
+    "./Images/moon-icon.svg",
+    "./Images/search-icon.svg"
 ];
 
 self.addEventListener("install", (event) => {

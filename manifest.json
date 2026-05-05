@@ -4,8 +4,8 @@
   "description": "Recruiter-style GitHub portfolio analyzer with weighted scoring, insights, and actionable suggestions.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f3f7ff",
-  "theme_color": "#1f6feb",
+  "background_color": "#f0f5ff",
+  "theme_color": "#0856d6",
   "icons": [
     {
       "src": "Images/android-chrome-192x192.png",

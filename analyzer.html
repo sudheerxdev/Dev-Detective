@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0856d6" />
+    <meta
+        name="description"
+        content="DevDetective analyzes GitHub portfolios with recruiter-style scoring, strengths, red flags, and actionable suggestions."
+    />
+    <meta property="og:title" content="DevDetective | GitHub Portfolio Analyzer" />
+    <meta property="og:description" content="Recruiter-style GitHub portfolio analysis with objective scoring and actionable improvements." />
+    <meta property="og:type" content="website" />
+
+    <meta property="og:image" content="Images/logo.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="DevDetective | GitHub Portfolio Analyzer" />
+    <meta name="twitter:description" content="Production-grade GitHub portfolio analysis with recruiter insights and improvement roadmap." />
+    <meta name="twitter:image" content="Images/logo.png" />
+    <meta name="robots" content="index, follow" />
+    <title>Analyzer - DevDetective | GitHub Portfolio Analyzer</title>
+
+    <link rel="icon" type="image/png" href="Images/favicon-32x32.png" />
+    <link rel="apple-touch-icon" href="Images/apple-touch-icon.png" />
+    <link rel="manifest" href="manifest.json" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet" />
+
+    <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css" />
+
+    <script>
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("sw.js").catch(() => {
+                    // service worker registration is optional for local development
+                });
+            });
+        }
+    </script>
+</head>
+<body>
+<div class="app-shell">
+    <header class="topbar">
+        <div class="brand">
+            <a href="index.html" style="display: flex; align-items: center; gap: 1rem; text-decoration: none; color: inherit;">
+                <img src="Images/logo.png" alt="DevDetective logo" class="brand-logo" />
+                <div>
+                    <h1>DevDetective</h1>
+                    <p>GitHub Portfolio Analyzer and Recruiter Insight Engine</p>
+                </div>
+            </a>
+        </div>
+        <div class="topbar-pills">
+            <span class="top-pill">Serverless API</span>
+            <span class="top-pill">Rate-Limited</span>
+            <span class="top-pill">Recruiter Lens</span>
+        </div>
+    </header>
+
+    <section class="hero-shell">
+        <article class="hero-copy card">
+            <p class="eyebrow">Hackathon Edition</p>
+            <h2>Turn any GitHub profile into a recruiter-ready portfolio report.</h2>
+            <p class="hero-subtitle">
+                DevDetective reads live GitHub signals and returns objective scoring, hidden risk detection,
+                role-fit insights, and a concrete improvement roadmap.
+            </p>
+            <div class="hero-points">
+                <span class="hero-chip">Real GitHub Data</span>
+                <span class="hero-chip">Transparent Scoring</span>
+                <span class="hero-chip">Downloadable Report</span>
+            </div>
+        </article>
+        <aside class="hero-mascot card">
+            <div class="mascot-wrap">
+                <img src="Images/mascot-detective.svg" alt="DevDetective assistant mascot" class="mascot-art" />
+                <div class="mascot-glow" aria-hidden="true"></div>
+            </div>
+            <p class="mascot-line">"Share a profile. I'll reveal what recruiters really see."</p>
+        </aside>
+    </section>
+
+    <section class="card controls-card">
+        <div class="controls-grid">
+            <div class="field">
+                <label for="profileInput">
+                    GitHub Username or Profile URL
+                    <span class="tooltip" data-tooltip="Supports username, @username, or full https://github.com/username URL.">?</span>
+                </label>
+                <input
+                    id="profileInput"
+                    type="text"
+                    placeholder="e.g. torvalds or https://github.com/torvalds"
+                    autocomplete="off"
+                />
+                <p class="hint">
+                    Tip: paste a full profile URL and DevDetective extracts the username automatically.
+                </p>
+            </div>
+
+            <div class="button-group">
+                <button id="analyzeBtn" class="btn btn-primary">Analyze Portfolio</button>
+                <button id="themeToggleBtn" class="btn">Switch to Dark</button>
+                <button id="downloadReportBtn" class="btn" disabled>Download Report (.md)</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="status-stack">
+        <div id="loadingState" class="status status-loading hidden" aria-live="polite">
+            <span class="spinner" aria-hidden="true"></span>
+            <span id="loadingText">Analyzing profile...</span>
+        </div>
+        <div id="successBanner" class="status status-success hidden" aria-live="polite"></div>
+        <div id="errorBanner" class="status status-error hidden" role="alert" aria-live="assertive"></div>
+        <div id="rateLimitBanner" class="status status-warn hidden" role="alert" aria-live="polite"></div>
+    </section>
+
+    <section id="skeletonPanel" class="skeleton-panel hidden" aria-hidden="true">
+        <div class="skeleton-card">
+            <div class="skeleton-line skeleton-line-lg"></div>
+            <div class="skeleton-line"></div>
+            <div class="skeleton-grid-mini">
+                <div class="skeleton-pill"></div>
+                <div class="skeleton-pill"></div>
+                <div class="skeleton-pill"></div>
+            </div>
+        </div>
+        <div class="skeleton-card">
+            <div class="skeleton-line skeleton-line-lg"></div>
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line skeleton-line-sm"></div>
+        </div>
+    </section>
+
+    <main class="layout">
+        <section class="left-column">
+            <article class="card profile-card">
+                <div class="profile-header">
+                    <img id="avatarImg" class="avatar" src="Images/logo.png" alt="Profile avatar" />
+                    <div class="profile-meta">
+                        <h2 id="profileName">No profile selected</h2>
+                        <p id="profileHandle" class="muted">@username</p>
+                        <a id="profileLink" href="#" target="_blank" rel="noopener noreferrer">Open GitHub Profile</a>
+                    </div>
+                </div>
+
+                <p id="profileBio" class="muted">
+                    Run an analysis to generate recruiter-style portfolio evaluation.
+                </p>
+
+                <div class="stats-grid">
+                    <div class="stat-card"><span>Public Repos</span><strong id="statRepos">-</strong></div>
+                    <div class="stat-card"><span>Followers</span><strong id="statFollowers">-</strong></div>
+                    <div class="stat-card"><span>Following</span><strong id="statFollowing">-</strong></div>
+                    <div class="stat-card"><span>Last Push</span><strong id="statLastPush">-</strong></div>
+                    <div class="stat-card"><span>Authored PRs</span><strong id="statPrCount">-</strong></div>
+                    <div class="stat-card"><span>Authored Issues</span><strong id="statIssueCount">-</strong></div>
+                </div>
+            </article>
+
+            <article class="card">
+                <div class="card-title-row">
+                    <h2 class="section-title">Pinned Repositories</h2>
+                    <span id="pinnedSourceBadge" class="chip chip-neutral">fallback</span>
+                </div>
+                <ul id="pinnedReposList" class="item-list"></ul>
+            </article>
+
+            <article class="card">
+                <h2 class="section-title">Search History</h2>
+                <div id="historyList" class="history-list"></div>
+            </article>
+        </section>
+
+        <section class="right-column">
+            <article class="card score-card">
+                <div class="score-head">
+                    <div id="overallScoreRing" class="score-ring" style="--score-value:0;">
+                        <span id="overallScore" class="score-value">--</span>
+                    </div>
+                    <div>
+                        <h2>GitHub Portfolio Score</h2>
+                        <p id="scoreGrade" class="score-grade">Grade -</p>
+                        <p id="scoreSummary" class="muted">
+                            Analyze a profile to generate weighted recruiter evaluation.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="premium-score-grid">
+                    <div class="premium-score-item">
+                        <span>Hireability Score</span>
+                        <strong id="hireabilityScore">--</strong>
+                        <small id="hireabilityHint">Weighted recruiter-fit index</small>
+                    </div>
+                    <div class="premium-score-item">
+                        <span>Portfolio Readiness</span>
+                        <strong id="readinessLevel">--</strong>
+                        <small id="readinessHint">Analyze a profile to classify readiness</small>
+                    </div>
+                </div>
+                <div class="readiness-track" aria-hidden="true">
+                    <span id="readinessBar"></span>
+                </div>
+
+                <div class="subscore-grid">
+                    <div class="subscore-item"><span>Documentation Quality</span><span id="subDocumentationQuality" class="chip chip-neutral">--</span></div>
+                    <div class="subscore-item"><span>Code Activity / Consistency</span><span id="subCodeActivityConsistency" class="chip chip-neutral">--</span></div>
+                    <div class="subscore-item"><span>Project Popularity</span><span id="subProjectPopularity" class="chip chip-neutral">--</span></div>
+                    <div class="subscore-item"><span>Repository Completeness</span><span id="subRepositoryCompleteness" class="chip chip-neutral">--</span></div>
+                    <div class="subscore-item"><span>Language Diversity</span><span id="subLanguageDiversity" class="chip chip-neutral">--</span></div>
+                    <div class="subscore-item"><span>Recent Activity</span><span id="subRecentActivity" class="chip chip-neutral">--</span></div>
+                    <div class="subscore-item"><span>Impact Signals</span><span id="subImpactSignals" class="chip chip-neutral">--</span></div>
+                </div>
+            </article>
+
+            <article class="card">
+                <h2 class="section-title">Scoring Transparency</h2>
+                <p class="muted transparency-note">
+                    Each subscore is calculated from real GitHub metrics and weighted into the final score.
+                </p>
+                <div class="formula-grid">
+                    <div class="formula-row">
+                        <div>
+                            <strong>Documentation Quality (18%)</strong>
+                            <p>0.75 × README Coverage + 0.25 × Description Coverage</p>
+                        </div>
+                        <span id="explainDocumentationQuality" class="chip chip-neutral">--</span>
+                    </div>
+                    <div class="formula-row">
+                        <div>
+                            <strong>Code Activity / Consistency (17%)</strong>
+                            <p>0.60 × Active Months (last 6) + 0.40 × Repos Updated in 90 Days</p>
+                        </div>
+                        <span id="explainCodeActivityConsistency" class="chip chip-neutral">--</span>
+                    </div>
+                    <div class="formula-row">
+                        <div>
+                            <strong>Project Popularity (15%)</strong>
+                            <p>0.60 × Stars/Repo + 0.25 × Forks/Repo + 0.15 × Watchers/Repo (capped)</p>
+                        </div>
+                        <span id="explainProjectPopularity" class="chip chip-neutral">--</span>
+                    </div>
+                    <div class="formula-row">
+                        <div>
+                            <strong>Repository Completeness (14%)</strong>
+                            <p>0.50 × Non-empty + 0.30 × Homepage + 0.20 × Topics</p>
+                        </div>
+                        <span id="explainRepositoryCompleteness" class="chip chip-neutral">--</span>
+                    </div>
+                    <div class="formula-row">
+                        <div>
+                            <strong>Language Diversity (10%)</strong>
+                            <p>0.70 × Unique Languages + 0.30 × Shannon Entropy</p>
+                        </div>
+                        <span id="explainLanguageDiversity" class="chip chip-neutral">--</span>
+                    </div>
+                    <div class="formula-row">
+                        <div>
+                            <strong>Recent Activity (14%)</strong>
+                            <p>0.70 × Recency Bucket + 0.30 × Repos Updated in 30 Days</p>
+                        </div>
+                        <span id="explainRecentActivity" class="chip chip-neutral">--</span>
+                    </div>
+                    <div class="formula-row">
+                        <div>
+                            <strong>Impact Signals (12%)</strong>
+                            <p>0.35 × Top Repo Stars + 0.25 × Followers + 0.25 × PRs + 0.15 × Issues</p>
+                        </div>
+                        <span id="explainImpactSignals" class="chip chip-neutral">--</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="card recruiter-sim-card">
+                <div class="card-title-row">
+                    <h2 class="section-title">AI Recruiter Simulation</h2>
+                    <span id="aiRecruiterVerdict" class="chip chip-neutral">Pending</span>
+                </div>
+                <p id="aiRecruiterSummary" class="muted">
+                    Run an analysis to get recruiter-style interview feedback simulation.
+                </p>
+                <ul id="aiRecruiterSignals" class="item-list"></ul>
+            </article>
+
+            <article class="card insights-card">
+                <div class="insights-grid">
+                    <div>
+                        <h3>Strengths</h3>
+                        <ul id="strengthsList" class="insight-list"></ul>
+                    </div>
+                    <div>
+                        <h3>Red Flags</h3>
+                        <ul id="redFlagsList" class="insight-list"></ul>
+                    </div>
+                    <div>
+                        <h3>Actionable Suggestions</h3>
+                        <ul id="suggestionsList" class="insight-list"></ul>
+                    </div>
+                </div>
+            </article>
+
+            <article class="card">
+                <h2 class="section-title">Hidden Risk Detection</h2>
+                <ul id="hiddenRisksList" class="insight-list"></ul>
+            </article>
+
+            <article class="card">
+                <div class="card-title-row">
+                    <h2 class="section-title">Career Path Recommendation</h2>
+                    <span id="careerConfidence" class="chip chip-neutral">--</span>
+                </div>
+                <h3 id="careerPathTitle" class="career-title">Run an analysis to generate role fit</h3>
+                <p id="careerPathSummary" class="muted">
+                    Role recommendations are inferred from your repository stack, impact signals, and activity profile.
+                </p>
+                <ul id="careerSkillsList" class="item-list"></ul>
+            </article>
+
+            <article class="card">
+                <h2 class="section-title">Personalized Improvement Roadmap</h2>
+                <ol id="roadmapList" class="roadmap-list"></ol>
+            </article>
+
+            <article class="card">
+                <h2 class="section-title">Visual Analytics</h2>
+                <div class="chart-grid">
+                    <div class="chart-panel">
+                        <h3>Language Usage</h3>
+                        <canvas id="languageChart"></canvas>
+                    </div>
+                    <div class="chart-panel">
+                        <h3>Repository Importance</h3>
+                        <canvas id="importanceChart"></canvas>
+                    </div>
+                    <div class="chart-panel">
+                        <h3>Portfolio Dimension Radar</h3>
+                        <canvas id="subscoreRadarChart"></canvas>
+                    </div>
+                    <div class="chart-panel">
+                        <h3>Repository Activity Buckets</h3>
+                        <canvas id="activityChart"></canvas>
+                    </div>
+                </div>
+            </article>
+
+            <article class="card">
+                <h2 class="section-title">Top Repository Ranking</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Repository</th>
+                            <th>Importance</th>
+                            <th>Stars / Forks / Watchers</th>
+                            <th>Last Push</th>
+                            <th>README</th>
+                        </tr>
+                        </thead>
+                        <tbody id="repoRankingTable"></tbody>
+                    </table>
+                </div>
+            </article>
+        </section>
+    </main>
+</div>
+
+<script type="module" src="src/main.js"></script>
+</body>
+</html>
