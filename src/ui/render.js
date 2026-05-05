@@ -100,6 +100,7 @@ function renderProfile(result, ui) {
   ui.statLastPush.textContent = metrics.lastPushDate ? formatDate(metrics.lastPushDate) : "No push data";
   ui.statPrCount.textContent = formatCompactNumber(metrics.authoredPRCount);
   ui.statIssueCount.textContent = formatCompactNumber(metrics.authoredIssueCount);
+  ui.statReviewCount.textContent = formatCompactNumber(metrics.authoredReviewCount);
 }
 
 function renderScore(result, ui) {
@@ -142,7 +143,7 @@ function renderScoringTransparency(result) {
     repositoryCompleteness: `Non-empty ${formatPercent(metrics.nonEmptyRepoRatio)}, Topics ${formatPercent(metrics.topicsRatio)}`,
     languageDiversity: `${metrics.uniqueLanguages} langs, Entropy ${metrics.normalizedShannonEntropy.toFixed(2)}`,
     recentActivity: `${metrics.daysSinceLastPush}d last push, ${formatPercent(metrics.reposUpdated30dRatio)} updated`,
-    impactSignals: `Top repo ⭐ ${metrics.topRepoStars}, PRs ${metrics.authoredPRCount}, Issues ${metrics.authoredIssueCount}`
+    impactSignals: `Top repo ⭐ ${metrics.topRepoStars}, PRs ${metrics.authoredPRCount}, Issues ${metrics.authoredIssueCount}, Reviews ${metrics.authoredReviewCount}`
   };
 
   Object.entries(SCORING_EXPLAIN_ID_MAP).forEach(([key, elementId]) => {

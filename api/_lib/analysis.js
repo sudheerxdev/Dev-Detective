@@ -185,6 +185,7 @@ export function buildAnalysisResult({ profile, scorableRepos, contributions, par
     daysSinceLastPush,
     authoredPRCount: contributions.prCount,
     authoredIssueCount: contributions.issueCount,
+    authoredReviewCount: contributions.reviewCount,
     uniqueLanguages,
     topLanguages,
     dominantLanguage,
