@@ -48,6 +48,8 @@ function init() {
 
   if (state.history[0]) {
     ui.profileInput.value = state.history[0];
+  } else {
+    ui.profileInput.value = "sudheerxdev";
   }
 }
 
