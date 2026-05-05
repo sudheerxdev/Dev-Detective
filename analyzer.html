@@ -665,6 +665,22 @@
         table tbody tr:hover {
             background: var(--surface-soft);
         }
+
+        .download-menu.hidden {
+            display: none !important;
+        }
+
+        .download-option:hover {
+            background: var(--surface-soft) !important;
+        }
+
+        .verified-badge.hidden {
+            display: none !important;
+        }
+
+        .premium-card {
+            min-height: auto;
+        }
     </style>
 
     <script>
@@ -718,7 +734,14 @@
                 <div class="button-group">
                     <button id="analyzeBtn" class="btn btn-primary">Analyze</button>
                     <button id="themeToggleBtn" class="btn">🌙 Theme</button>
-                    <button id="downloadReportBtn" class="btn" disabled>📥 Report</button>
+                    <div style="position: relative; display: inline-block;">
+                        <button id="downloadReportBtn" class="btn" disabled style="display: flex; align-items: center; gap: 0.5rem;">📥 Report <span style="font-size: 0.6rem;">▼</span></button>
+                        <div id="downloadMenu" class="download-menu hidden" style="position: absolute; top: 100%; right: 0; background: var(--surface-solid); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); min-width: 150px; z-index: 10;">
+                            <button class="download-option" onclick="downloadReport('md')" style="width: 100%; padding: 0.75rem 1rem; text-align: left; border: none; background: none; cursor: pointer; border-bottom: 1px solid var(--border); font-family: Manrope; color: var(--text);">📄 Markdown (.md)</button>
+                            <button class="download-option" onclick="downloadReport('png')" style="width: 100%; padding: 0.75rem 1rem; text-align: left; border: none; background: none; cursor: pointer; border-bottom: 1px solid var(--border); font-family: Manrope; color: var(--text);">🖼️ Image (.png)</button>
+                            <button class="download-option" onclick="downloadReport('jpg')" style="width: 100%; padding: 0.75rem 1rem; text-align: left; border: none; background: none; cursor: pointer; font-family: Manrope; color: var(--text);">📸 JPEG (.jpg)</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -754,7 +777,10 @@
                 <!-- Profile Card -->
                 <article class="card profile-card">
                     <div class="profile-header">
-                        <img id="avatarImg" class="avatar" src="Images/logo.png" alt="Profile avatar" />
+                        <div style="position: relative;">
+                            <img id="avatarImg" class="avatar" src="Images/logo.png" alt="Profile avatar" />
+                            <span id="verifiedBadge" class="verified-badge hidden" style="position: absolute; bottom: -2px; right: -2px; width: 28px; height: 28px; background: #0856d6; border: 3px solid white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; color: white; font-weight: bold; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">✓</span>
+                        </div>
                         <div class="profile-meta">
                             <h2 id="profileName">No profile selected</h2>
                             <p id="profileHandle" class="muted">@username</p>
@@ -769,6 +795,21 @@
                         <div class="stat-card"><span>Last Push</span><strong id="statLastPush">-</strong></div>
                         <div class="stat-card"><span>PRs</span><strong id="statPrCount">-</strong></div>
                         <div class="stat-card"><span>Issues</span><strong id="statIssueCount">-</strong></div>
+                    </div>
+                </article>
+
+                <!-- Premium Verified Card -->
+                <article class="card premium-card" id="premiumCard" style="background: linear-gradient(135deg, rgba(8, 86, 214, 0.08), rgba(91, 163, 255, 0.08)); border: 2px solid var(--accent); position: relative; overflow: hidden;">
+                    <div style="position: absolute; top: -10px; right: -10px; width: 80px; height: 80px; background: var(--accent); border-radius: 50%; opacity: 0.1;"></div>
+                    <div style="display: flex; align-items: center; gap: 1rem; position: relative; z-index: 1;">
+                        <div style="font-size: 2.5rem;">✓</div>
+                        <div>
+                            <h3 style="margin: 0 0 0.25rem 0; font-size: 1.1rem; color: var(--accent);">Verified Profile</h3>
+                            <p style="margin: 0; font-size: 0.85rem; color: var(--muted);">GitHub account authenticated</p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); font-size: 0.85rem; color: var(--muted);">
+                        <strong id="verifyStatus">Status:</strong> <span id="verifyStatusText">Not verified</span>
                     </div>
                 </article>
 
@@ -1203,5 +1244,182 @@
 </div>
 
 <script type="module" src="src/main.js"></script>
+
+<script>
+// Download Menu Toggle
+document.addEventListener('DOMContentLoaded', function() {
+    const downloadBtn = document.getElementById('downloadReportBtn');
+    const downloadMenu = document.getElementById('downloadMenu');
+
+    if (downloadBtn) {
+        downloadBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            downloadMenu.classList.toggle('hidden');
+        });
+    }
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(e) {
+        if (downloadMenu && downloadBtn && !downloadBtn.contains(e.target) && !downloadMenu.contains(e.target)) {
+            downloadMenu.classList.add('hidden');
+        }
+    });
+});
+
+// Download Report Function
+function downloadReport(format) {
+    const profileName = document.getElementById('profileName').textContent || 'profile';
+    const timestamp = new Date().toISOString().split('T')[0];
+    const filename = `${profileName}-devdetective-${timestamp}`;
+
+    if (format === 'md') {
+        downloadMarkdownReport();
+    } else if (format === 'png') {
+        downloadImageReport('png');
+    } else if (format === 'jpg') {
+        downloadImageReport('jpg');
+    }
+
+    // Close menu after download
+    document.getElementById('downloadMenu').classList.add('hidden');
+}
+
+// Enhanced Markdown Download (existing functionality)
+function downloadMarkdownReport() {
+    const profileName = document.getElementById('profileName').textContent || 'profile';
+    const timestamp = new Date().toISOString().split('T')[0];
+    
+    // Get all analysis content
+    const score = document.getElementById('overallScore').textContent;
+    const grade = document.getElementById('scoreGrade').textContent;
+    const bio = document.getElementById('profileBio').textContent;
+    const followers = document.getElementById('statFollowers').textContent;
+    const following = document.getElementById('statFollowing').textContent;
+    const repos = document.getElementById('statRepos').textContent;
+    
+    const markdown = `# DevDetective Analysis Report
+
+**Profile:** ${profileName}
+**Date:** ${timestamp}
+**Overall Score:** ${score}
+**Grade:** ${grade}
+
+## Profile Summary
+${bio}
+
+## Statistics
+- Repositories: ${repos}
+- Followers: ${followers}
+- Following: ${following}
+
+---
+*Generated by DevDetective | GitHub Portfolio Analyzer*
+`;
+
+    const blob = new Blob([markdown], { type: 'text/markdown;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${profileName}-devdetective-${timestamp}.md`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// Image Download Function (PNG/JPG)
+function downloadImageReport(format) {
+    const profileName = document.getElementById('profileName').textContent || 'profile';
+    const timestamp = new Date().toISOString().split('T')[0];
+    
+    // Create a canvas element
+    const canvas = document.createElement('canvas');
+    canvas.width = 1200;
+    canvas.height = 1400;
+    const ctx = canvas.getContext('2d');
+
+    // Background gradient
+    const gradient = ctx.createLinearGradient(0, 0, 1200, 1400);
+    gradient.addColorStop(0, '#fafcff');
+    gradient.addColorStop(1, '#e8f0ff');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 1200, 1400);
+
+    // Title
+    ctx.fillStyle = '#0856d6';
+    ctx.font = 'bold 48px Manrope';
+    ctx.fillText('DevDetective Portfolio Report', 60, 80);
+
+    // Profile Name
+    ctx.fillStyle = '#0a1628';
+    ctx.font = 'bold 40px Manrope';
+    const profileName_text = document.getElementById('profileName').textContent;
+    ctx.fillText(profileName_text, 60, 150);
+
+    // Verified Badge
+    ctx.fillStyle = '#0856d6';
+    ctx.beginPath();
+    ctx.arc(1080, 140, 30, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 24px Manrope';
+    ctx.textAlign = 'center';
+    ctx.fillText('✓', 1080, 155);
+    ctx.textAlign = 'left';
+
+    // Score Section
+    ctx.fillStyle = '#0a1628';
+    ctx.font = 'bold 24px Manrope';
+    ctx.fillText('Portfolio Score', 60, 240);
+
+    const score = document.getElementById('overallScore').textContent;
+    ctx.fillStyle = '#0856d6';
+    ctx.font = 'bold 64px Manrope';
+    ctx.fillText(score, 80, 320);
+
+    // Stats
+    let yPos = 400;
+    const stats = [
+        { label: 'Followers', value: document.getElementById('statFollowers').textContent },
+        { label: 'Following', value: document.getElementById('statFollowing').textContent },
+        { label: 'Repositories', value: document.getElementById('statRepos').textContent }
+    ];
+
+    ctx.font = 'bold 18px Manrope';
+    ctx.fillStyle = '#5a7896';
+    stats.forEach(stat => {
+        ctx.fillText(`${stat.label}: ${stat.value}`, 60, yPos);
+        yPos += 60;
+    });
+
+    // Footer
+    ctx.fillStyle = '#5a7896';
+    ctx.font = '16px Manrope';
+    ctx.fillText(`Generated by DevDetective | ${timestamp}`, 60, 1350);
+
+    // Download the canvas as image
+    canvas.toBlob(function(blob) {
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `${profileName}-devdetective-${timestamp}.${format}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }, `image/${format}`);
+}
+
+// Show verified badge function (can be called from main.js)
+function showVerifiedBadge(isVerified) {
+    const badge = document.getElementById('verifiedBadge');
+    const statusText = document.getElementById('verifyStatusText');
+    if (isVerified) {
+        badge.classList.remove('hidden');
+        statusText.textContent = '✓ Verified';
+        statusText.style.color = 'var(--good)';
+    } else {
+        badge.classList.add('hidden');
+        statusText.textContent = 'Not verified';
+    }
+}
+</script>
+
 </body>
 </html>
