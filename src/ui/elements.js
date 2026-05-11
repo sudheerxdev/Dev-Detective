@@ -22,6 +22,7 @@ export function getUiElements() {
     statLastPush: document.getElementById("statLastPush"),
     statPrCount: document.getElementById("statPrCount"),
     statIssueCount: document.getElementById("statIssueCount"),
+    statReviewCount: document.getElementById("statReviewCount"),
 
     pinnedSourceBadge: document.getElementById("pinnedSourceBadge"),
     pinnedReposList: document.getElementById("pinnedReposList"),

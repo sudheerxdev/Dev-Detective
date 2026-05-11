@@ -1,0 +1,1163 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0856d6" />
+    <meta
+        name="description"
+        content="DevDetective analyzes GitHub portfolios with recruiter-style scoring, strengths, red flags, and actionable suggestions."
+    />
+    <meta property="og:title" content="DevDetective | GitHub Portfolio Analyzer" />
+    <meta property="og:description" content="Recruiter-style GitHub portfolio analysis with objective scoring and actionable improvements." />
+    <meta property="og:type" content="website" />
+
+    <meta property="og:image" content="Images/logo.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="DevDetective | GitHub Portfolio Analyzer" />
+    <meta name="twitter:description" content="Production-grade GitHub portfolio analysis with recruiter insights and improvement roadmap." />
+    <meta name="twitter:image" content="Images/logo.png" />
+    <meta name="robots" content="index, follow" />
+    <title>Analyzer - DevDetective | GitHub Portfolio Analyzer</title>
+
+    <link rel="icon" type="image/png" href="Images/favicon-32x32.png" />
+    <link rel="apple-touch-icon" href="Images/apple-touch-icon.png" />
+    <link rel="manifest" href="manifest.json" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet" />
+
+    <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css" />
+
+    <style>
+        /* Service Provider Site Styles */
+        .app-shell {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            background: var(--surface-solid);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .topbar .brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .topbar .brand h1 {
+            margin: 0;
+            font-size: 1.25rem;
+        }
+
+        .topbar .brand p {
+            margin: 0;
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+
+        .brand-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+        }
+
+        .main-hero {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, rgba(8, 86, 214, 0.05), rgba(91, 163, 255, 0.05));
+            border-bottom: 1px solid var(--border);
+        }
+
+        .main-hero h1 {
+            font-size: 2rem;
+            margin: 0 0 0.5rem 0;
+            color: var(--accent);
+        }
+
+        .main-hero p {
+            font-size: 1rem;
+            color: var(--muted);
+            margin: 0;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .analyzer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            width: 100%;
+            flex: 1;
+        }
+
+        .input-section {
+            background: var(--surface-solid);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .input-section h2 {
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+            font-size: 1.25rem;
+        }
+
+        .analyzer-grid {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+
+        .field {
+            margin: 0;
+        }
+
+        .field label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        .field input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: "Manrope", sans-serif;
+            font-size: 1rem;
+            background: var(--surface-soft);
+            color: var(--text);
+            transition: all 200ms ease;
+        }
+
+        .field input:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: var(--surface-solid);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        .field .hint {
+            margin: 0.25rem 0 0 0;
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.25rem;
+            border: none;
+            border-radius: 8px;
+            font-family: "Space Mono", monospace;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 200ms ease;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-strong);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(8, 86, 214, 0.3);
+        }
+
+        .btn {
+            background: var(--surface-soft);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn:hover:not(.btn-primary) {
+            background: var(--accent-soft);
+            color: white;
+            border-color: var(--accent-soft);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .status-stack {
+            margin-bottom: 1.5rem;
+        }
+
+        .status {
+            padding: 1rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .status.hidden {
+            display: none;
+        }
+
+        .status-loading {
+            background: rgba(91, 163, 255, 0.1);
+            color: var(--accent);
+            border: 1px solid var(--accent-soft);
+        }
+
+        .status-success {
+            background: rgba(15, 121, 56, 0.1);
+            color: var(--good);
+            border: 1px solid var(--good);
+        }
+
+        .status-error {
+            background: rgba(155, 31, 52, 0.1);
+            color: var(--risk);
+            border: 1px solid var(--risk);
+        }
+
+        .status-warn {
+            background: rgba(157, 94, 0, 0.1);
+            color: var(--warn);
+            border: 1px solid var(--warn);
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid currentColor;
+            border-right-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--surface-solid);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .card.hidden {
+            display: none;
+        }
+
+        .score-card {
+            grid-column: 1 / -1;
+        }
+
+        .score-head {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .score-ring {
+            width: 110px;
+            height: 110px;
+            min-width: 110px;
+            border-radius: 50%;
+            background: conic-gradient(var(--accent) 0deg calc(var(--score-value, 0) * 3.6deg), var(--border) 0deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .score-ring::before {
+            content: '';
+            position: absolute;
+            width: 90%;
+            height: 90%;
+            border-radius: 50%;
+            background: var(--surface-solid);
+        }
+
+        .score-value {
+            position: relative;
+            z-index: 1;
+            font-size: 2.2rem;
+        }
+
+        .score-grade {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin: 0.5rem 0;
+        }
+
+        .profile-card {
+            grid-column: 1 / -1;
+        }
+
+        .profile-header {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            min-width: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .profile-meta {
+            flex: 1;
+        }
+
+        .profile-meta h2 {
+            margin: 0 0 0.25rem 0;
+            font-size: 1.3rem;
+        }
+
+        .profile-meta p {
+            margin: 0 0 0.75rem 0;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .profile-meta a {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: var(--accent);
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 1rem;
+        }
+
+        .stat-card {
+            background: var(--surface-soft);
+            padding: 0.75rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-card span {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card strong {
+            display: block;
+            font-size: 1.3rem;
+            color: var(--accent);
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .analyzer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-wrap: wrap;
+            }
+
+            .main-hero h1 {
+                font-size: 1.5rem;
+            }
+
+            .score-head {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        .card-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            gap: 1rem;
+        }
+
+        .section-title {
+            margin: 0;
+            font-size: 1.1rem;
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        .chip {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .chip-neutral {
+            background: var(--surface-soft);
+            color: var(--muted);
+        }
+
+        .item-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .item-list li {
+            padding: 0.6rem 0;
+            border-bottom: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .item-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feedback-section {
+            background: linear-gradient(135deg, rgba(8, 86, 214, 0.05), rgba(91, 163, 255, 0.05));
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            grid-column: 1 / -1;
+            margin-top: 2rem;
+        }
+
+        .feedback-section h2 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            font-size: 1.2rem;
+        }
+
+        .feedback-section p {
+            margin: 0;
+        }
+
+        .feedback-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .feedback-card {
+            background: var(--surface-solid);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 200ms ease;
+        }
+
+        .feedback-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px rgba(8, 86, 214, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .feedback-card strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+            font-size: 0.95rem;
+        }
+
+        .feedback-card p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .history-item {
+            padding: 0.75rem;
+            background: var(--surface-soft);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 200ms ease;
+            color: var(--text);
+            border: 1px solid transparent;
+            font-size: 0.9rem;
+        }
+
+        .history-item:hover {
+            background: var(--accent-soft);
+            color: white;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .chart-panel {
+            background: var(--surface-soft);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .chart-panel h3 {
+            margin: 0 0 1rem 0;
+            font-size: 0.95rem;
+        }
+
+        .chart-panel canvas {
+            max-width: 100%;
+        }
+
+        .skeleton-panel {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .skeleton-panel.hidden {
+            display: none;
+        }
+
+        .skeleton-card {
+            background: var(--surface-solid);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .skeleton-line {
+            height: 12px;
+            background: var(--surface-soft);
+            border-radius: 6px;
+            margin-bottom: 0.75rem;
+        }
+
+        .skeleton-line-lg {
+            height: 24px;
+            margin-bottom: 1rem;
+        }
+
+        .skeleton-line-sm {
+            width: 50%;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        footer {
+            background: var(--surface-soft);
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            text-align: center;
+            color: var(--muted);
+            margin-top: auto;
+            font-size: 0.85rem;
+        }
+
+        footer p {
+            margin: 0.25rem 0;
+        }
+
+        footer strong {
+            color: var(--text);
+        }
+
+        textarea {
+            font-family: "Manrope", sans-serif;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table thead {
+            background: var(--surface-soft);
+        }
+
+        table th {
+            text-align: left;
+            padding: 0.75rem;
+            font-weight: 600;
+            border-bottom: 2px solid var(--border);
+            font-size: 0.9rem;
+        }
+
+        table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+
+        table tbody tr:hover {
+            background: var(--surface-soft);
+        }
+
+        .download-menu.hidden {
+            display: none !important;
+        }
+
+        .download-option:hover {
+            background: var(--surface-soft) !important;
+        }
+
+        .verified-badge.hidden {
+            display: none !important;
+        }
+
+        .premium-card {
+            min-height: auto;
+        }
+    </style>
+
+    <script>
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("sw.js").catch(() => {
+                    // service worker registration is optional for local development
+                });
+            });
+        }
+    </script>
+</head>
+<body>
+<div class="app-shell">
+    <!-- Header -->
+    <header class="topbar">
+        <div class="brand">
+            <a href="index.html" style="display: flex; align-items: center; gap: 1rem; text-decoration: none; color: inherit;">
+                <img src="Images/logo.png" alt="DevDetective logo" class="brand-logo" />
+                <div>
+                    <h1>DevDetective</h1>
+                    <p>GitHub Portfolio Analyzer</p>
+                </div>
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <div class="main-hero">
+        <h1>Analyze Your GitHub Profile</h1>
+        <p>Get recruiter-style insights, scoring, and actionable improvements for your portfolio</p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="analyzer-container">
+        <!-- Analyzer Input Section -->
+        <section class="input-section">
+            <h2>Start Analysis</h2>
+            <div class="analyzer-grid">
+                <div class="field">
+                    <label for="profileInput">GitHub Username or Profile URL</label>
+                    <input
+                        id="profileInput"
+                        type="text"
+                        value="sudheerxdev"
+                        placeholder="e.g. torvalds or https://github.com/torvalds"
+                        autocomplete="off"
+                    />
+                    <p class="hint">Supports username, @username, or full profile URL</p>
+                </div>
+                <div class="button-group">
+                    <button id="analyzeBtn" class="btn btn-primary">Analyze</button>
+                    <button id="themeToggleBtn" class="btn">🌙 Theme</button>
+                    <div style="position: relative; display: inline-block;">
+                        <button id="downloadReportBtn" class="btn" disabled style="display: flex; align-items: center; gap: 0.5rem;">📥 Report <span style="font-size: 0.6rem;">▼</span></button>
+                        <div id="downloadMenu" class="download-menu hidden" style="position: absolute; top: 100%; right: 0; background: var(--surface-solid); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); min-width: 150px; z-index: 10;">
+                            <button class="download-option" onclick="downloadReport('md')" style="width: 100%; padding: 0.75rem 1rem; text-align: left; border: none; background: none; cursor: pointer; border-bottom: 1px solid var(--border); font-family: Manrope; color: var(--text);">📄 Markdown (.md)</button>
+                            <button class="download-option" onclick="downloadReport('png')" style="width: 100%; padding: 0.75rem 1rem; text-align: left; border: none; background: none; cursor: pointer; border-bottom: 1px solid var(--border); font-family: Manrope; color: var(--text);">🖼️ Image (.png)</button>
+                            <button class="download-option" onclick="downloadReport('jpg')" style="width: 100%; padding: 0.75rem 1rem; text-align: left; border: none; background: none; cursor: pointer; font-family: Manrope; color: var(--text);">📸 JPEG (.jpg)</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Status Messages -->
+        <section class="status-stack">
+            <div id="loadingState" class="status status-loading hidden" aria-live="polite">
+                <span class="spinner" aria-hidden="true"></span>
+                <span id="loadingText">Analyzing profile...</span>
+            </div>
+            <div id="successBanner" class="status status-success hidden" aria-live="polite"></div>
+            <div id="errorBanner" class="status status-error hidden" role="alert" aria-live="assertive"></div>
+            <div id="rateLimitBanner" class="status status-warn hidden" role="alert" aria-live="polite"></div>
+        </section>
+
+        <!-- Skeleton Loading -->
+        <section id="skeletonPanel" class="skeleton-panel hidden" aria-hidden="true">
+            <div class="skeleton-card">
+                <div class="skeleton-line skeleton-line-lg"></div>
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line"></div>
+            </div>
+            <div class="skeleton-card">
+                <div class="skeleton-line skeleton-line-lg"></div>
+                <div class="skeleton-line"></div>
+            </div>
+        </section>
+
+        <!-- Results Layout -->
+        <main class="layout">
+            <!-- Left Column: Profile Info -->
+            <section>
+                <!-- Profile Card -->
+                <article class="card profile-card">
+                    <div class="profile-header">
+                        <div style="position: relative;">
+                            <img id="avatarImg" class="avatar" src="Images/logo.png" alt="Profile avatar" />
+                            <span id="verifiedBadge" class="verified-badge hidden" style="position: absolute; bottom: -2px; right: -2px; width: 28px; height: 28px; background: #0856d6; border: 3px solid white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; color: white; font-weight: bold; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">✓</span>
+                        </div>
+                        <div class="profile-meta">
+                            <h2 id="profileName">No profile selected</h2>
+                            <p id="profileHandle" class="muted">@username</p>
+                            <a id="profileLink" href="#" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+                        </div>
+                    </div>
+                    <p id="profileBio" class="muted">Run an analysis to see profile details</p>
+                    <div class="stats-grid">
+                        <div class="stat-card"><span>Repos</span><strong id="statRepos">-</strong></div>
+                        <div class="stat-card"><span>Followers</span><strong id="statFollowers">-</strong></div>
+                        <div class="stat-card"><span>Following</span><strong id="statFollowing">-</strong></div>
+                        <div class="stat-card"><span>Last Push</span><strong id="statLastPush">-</strong></div>
+                        <div class="stat-card"><span>PRs</span><strong id="statPrCount">-</strong></div>
+                        <div class="stat-card"><span>Issues</span><strong id="statIssueCount">-</strong></div>
+                        <div class="stat-card"><span>Reviews</span><strong id="statReviewCount">-</strong></div>
+                    </div>
+                </article>
+
+                <!-- Premium Verified Card -->
+                <article class="card premium-card" id="premiumCard" style="background: linear-gradient(135deg, rgba(8, 86, 214, 0.08), rgba(91, 163, 255, 0.08)); border: 2px solid var(--accent); position: relative; overflow: hidden;">
+                    <div style="position: absolute; top: -10px; right: -10px; width: 80px; height: 80px; background: var(--accent); border-radius: 50%; opacity: 0.1;"></div>
+                    <div style="display: flex; align-items: center; gap: 1rem; position: relative; z-index: 1;">
+                        <div style="font-size: 2.5rem;">✓</div>
+                        <div>
+                            <h3 style="margin: 0 0 0.25rem 0; font-size: 1.1rem; color: var(--accent);">Verified Profile</h3>
+                            <p style="margin: 0; font-size: 0.85rem; color: var(--muted);">GitHub account authenticated</p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); font-size: 0.85rem; color: var(--muted);">
+                        <strong id="verifyStatus">Status:</strong> <span id="verifyStatusText">Not verified</span>
+                    </div>
+                </article>
+
+                <!-- Pinned Repositories -->
+                <article class="card">
+                    <div class="card-title-row">
+                        <h2 class="section-title">Pinned Repositories</h2>
+                        <span id="pinnedSourceBadge" class="chip chip-neutral">—</span>
+                    </div>
+                    <ul id="pinnedReposList" class="item-list"></ul>
+                </article>
+
+                <!-- Search History -->
+                <article class="card">
+                    <h2 class="section-title">Recent Searches</h2>
+                    <div id="historyList" class="history-list"></div>
+                </article>
+            </section>
+
+            <!-- Right Column: Score & Insights -->
+            <section>
+                <!-- Overall Score -->
+                <article class="card score-card">
+                    <div class="score-head">
+                        <div id="overallScoreRing" class="score-ring" style="--score-value:0;">
+                            <span id="overallScore" class="score-value">--</span>
+                        </div>
+                        <div>
+                            <h2 class="section-title">Portfolio Score</h2>
+                            <p id="scoreGrade" class="score-grade">Grade: -</p>
+                            <p id="scoreSummary" class="muted">Run analysis to generate score</p>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Insights -->
+                <article class="card insights-card">
+                    <h2 class="section-title">Key Insights</h2>
+                    <div style="display: grid; gap: 1.5rem;">
+                        <div>
+                            <h3 style="font-size: 1rem; margin: 0 0 0.75rem 0; color: var(--good);">✓ Strengths</h3>
+                            <ul id="strengthsList" class="item-list"></ul>
+                        </div>
+                        <div>
+                            <h3 style="font-size: 1rem; margin: 0 0 0.75rem 0; color: var(--risk);">⚠ Red Flags</h3>
+                            <ul id="redFlagsList" class="item-list"></ul>
+                        </div>
+                        <div>
+                            <h3 style="font-size: 1rem; margin: 0 0 0.75rem 0; color: var(--accent);">💡 Suggestions</h3>
+                            <ul id="suggestionsList" class="item-list"></ul>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Career Path -->
+                <article class="card">
+                    <div class="card-title-row">
+                        <h2 class="section-title">Career Path Fit</h2>
+                        <span id="careerConfidence" class="chip chip-neutral">--</span>
+                    </div>
+                    <h3 id="careerPathTitle" style="margin: 0 0 0.5rem 0; font-size: 1rem;">Run analysis</h3>
+                    <p id="careerPathSummary" class="muted" style="font-size: 0.9rem;">Role recommendations based on your repository stack and activity</p>
+                    <ul id="careerSkillsList" class="item-list"></ul>
+                </article>
+            </section>
+        </main>
+
+        <!-- Detailed Sections (Below Main Layout) -->
+        <div style="display: grid; gap: 2rem;">
+            <!-- Recruiter Simulation -->
+            <article class="card">
+                <div class="card-title-row">
+                    <h2 class="section-title">Recruiter Simulation</h2>
+                    <span id="aiRecruiterVerdict" class="chip chip-neutral">Pending</span>
+                </div>
+                <p id="aiRecruiterSummary" class="muted" style="font-size: 0.9rem;">Run analysis to get recruiter feedback</p>
+                <ul id="aiRecruiterSignals" class="item-list"></ul>
+            </article>
+
+            <!-- Improvement Roadmap -->
+            <article class="card">
+                <h2 class="section-title">Improvement Roadmap</h2>
+                <ol id="roadmapList" class="item-list" style="list-style: decimal; padding-left: 1.5rem;"></ol>
+            </article>
+
+            <!-- Analytics Charts -->
+            <article class="card">
+                <h2 class="section-title">Analytics</h2>
+                <div class="chart-grid">
+                    <div class="chart-panel">
+                        <h3>Language Usage</h3>
+                        <canvas id="languageChart"></canvas>
+                    </div>
+                    <div class="chart-panel">
+                        <h3>Repository Importance</h3>
+                        <canvas id="importanceChart"></canvas>
+                    </div>
+                    <div class="chart-panel">
+                        <h3>Portfolio Dimensions</h3>
+                        <canvas id="subscoreRadarChart"></canvas>
+                    </div>
+                    <div class="chart-panel">
+                        <h3>Activity Timeline</h3>
+                        <canvas id="activityChart"></canvas>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Repository Ranking -->
+            <article class="card">
+                <h2 class="section-title">Top Repositories</h2>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Repository</th>
+                            <th>Importance</th>
+                            <th>⭐ Stars</th>
+                            <th>Last Push</th>
+                        </tr>
+                        </thead>
+                        <tbody id="repoRankingTable"></tbody>
+                    </table>
+                </div>
+            </article>
+
+            <!-- Feedback Section -->
+            <section class="feedback-section">
+                <h2>Share Your Feedback</h2>
+                <p>Help us improve DevDetective with your thoughts and suggestions</p>
+                <div class="feedback-grid">
+                    <div class="feedback-card">
+                        <strong>📝 Report Issue</strong>
+                        <p>Found a bug or unexpected result?</p>
+                    </div>
+                    <div class="feedback-card">
+                        <strong>✨ Feature Request</strong>
+                        <p>Have an idea for a new feature?</p>
+                    </div>
+                    <div class="feedback-card">
+                        <strong>⭐ General Feedback</strong>
+                        <p>Share your overall experience</p>
+                    </div>
+                    <div class="feedback-card">
+                        <strong>💬 Questions</strong>
+                        <p>Need help or clarification?</p>
+                    </div>
+                </div>
+                <div style="margin-top: 1.5rem;">
+                    <textarea placeholder="Your feedback here... (optional)" style="width: 100%; padding: 1rem; border: 1px solid var(--border); border-radius: 8px; font-family: Manrope; resize: vertical; min-height: 100px; background: var(--surface-soft); color: var(--text);"></textarea>
+                    <button style="margin-top: 1rem; padding: 0.75rem 1.5rem; background: var(--accent); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 200ms ease; font-family: Space Mono;" onmouseover="this.style.background='var(--accent-strong)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--accent)'; this.style.transform='translateY(0)'">Send Feedback</button>
+                </div>
+            </section>
+
+            <!-- Hidden Risk Detection -->
+            <article class="card">
+                <h2 class="section-title">Risk Analysis</h2>
+                <ul id="hiddenRisksList" class="item-list"></ul>
+            </article>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p><strong>DevDetective</strong> — Recruiter-Style GitHub Portfolio Analysis</p>
+        <p>Analyze portfolios with transparency and objective scoring</p>
+        <p style="margin-top: 1rem; font-size: 0.8rem; opacity: 0.7;">© 2026 DevDetective. All rights reserved.</p>
+    </footer>
+</div>
+
+<script type="module" src="src/main.js"></script>
+
+<script>
+// Download Menu Toggle
+document.addEventListener('DOMContentLoaded', function() {
+    const downloadBtn = document.getElementById('downloadReportBtn');
+    const downloadMenu = document.getElementById('downloadMenu');
+
+    if (downloadBtn) {
+        downloadBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            downloadMenu.classList.toggle('hidden');
+        });
+    }
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(e) {
+        if (downloadMenu && downloadBtn && !downloadBtn.contains(e.target) && !downloadMenu.contains(e.target)) {
+            downloadMenu.classList.add('hidden');
+        }
+    });
+});
+
+// Download Report Function
+function downloadReport(format) {
+    const profileName = document.getElementById('profileName').textContent || 'profile';
+    const timestamp = new Date().toISOString().split('T')[0];
+    const filename = `${profileName}-devdetective-${timestamp}`;
+
+    if (format === 'md') {
+        downloadMarkdownReport();
+    } else if (format === 'png') {
+        downloadImageReport('png');
+    } else if (format === 'jpg') {
+        downloadImageReport('jpg');
+    }
+
+    // Close menu after download
+    document.getElementById('downloadMenu').classList.add('hidden');
+}
+
+// Enhanced Markdown Download (existing functionality)
+function downloadMarkdownReport() {
+    const profileName = document.getElementById('profileName').textContent || 'profile';
+    const timestamp = new Date().toISOString().split('T')[0];
+    
+    // Get all analysis content
+    const score = document.getElementById('overallScore').textContent;
+    const grade = document.getElementById('scoreGrade').textContent;
+    const bio = document.getElementById('profileBio').textContent;
+    const followers = document.getElementById('statFollowers').textContent;
+    const following = document.getElementById('statFollowing').textContent;
+    const repos = document.getElementById('statRepos').textContent;
+    
+    const markdown = `# DevDetective Analysis Report
+
+**Profile:** ${profileName}
+**Date:** ${timestamp}
+**Overall Score:** ${score}
+**Grade:** ${grade}
+
+## Profile Summary
+${bio}
+
+## Statistics
+- Repositories: ${repos}
+- Followers: ${followers}
+- Following: ${following}
+
+---
+*Generated by DevDetective | GitHub Portfolio Analyzer*
+`;
+
+    const blob = new Blob([markdown], { type: 'text/markdown;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${profileName}-devdetective-${timestamp}.md`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// Image Download Function (PNG/JPG)
+function downloadImageReport(format) {
+    const profileName = document.getElementById('profileName').textContent || 'profile';
+    const timestamp = new Date().toISOString().split('T')[0];
+    
+    // Create a canvas element
+    const canvas = document.createElement('canvas');
+    canvas.width = 1200;
+    canvas.height = 1400;
+    const ctx = canvas.getContext('2d');
+
+    // Background gradient
+    const gradient = ctx.createLinearGradient(0, 0, 1200, 1400);
+    gradient.addColorStop(0, '#fafcff');
+    gradient.addColorStop(1, '#e8f0ff');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 1200, 1400);
+
+    // Title
+    ctx.fillStyle = '#0856d6';
+    ctx.font = 'bold 48px Manrope';
+    ctx.fillText('DevDetective Portfolio Report', 60, 80);
+
+    // Profile Name
+    ctx.fillStyle = '#0a1628';
+    ctx.font = 'bold 40px Manrope';
+    const profileName_text = document.getElementById('profileName').textContent;
+    ctx.fillText(profileName_text, 60, 150);
+
+    // Verified Badge
+    ctx.fillStyle = '#0856d6';
+    ctx.beginPath();
+    ctx.arc(1080, 140, 30, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 24px Manrope';
+    ctx.textAlign = 'center';
+    ctx.fillText('✓', 1080, 155);
+    ctx.textAlign = 'left';
+
+    // Score Section
+    ctx.fillStyle = '#0a1628';
+    ctx.font = 'bold 24px Manrope';
+    ctx.fillText('Portfolio Score', 60, 240);
+
+    const score = document.getElementById('overallScore').textContent;
+    ctx.fillStyle = '#0856d6';
+    ctx.font = 'bold 64px Manrope';
+    ctx.fillText(score, 80, 320);
+
+    // Stats
+    let yPos = 400;
+    const stats = [
+        { label: 'Followers', value: document.getElementById('statFollowers').textContent },
+        { label: 'Following', value: document.getElementById('statFollowing').textContent },
+        { label: 'Repositories', value: document.getElementById('statRepos').textContent }
+    ];
+
+    ctx.font = 'bold 18px Manrope';
+    ctx.fillStyle = '#5a7896';
+    stats.forEach(stat => {
+        ctx.fillText(`${stat.label}: ${stat.value}`, 60, yPos);
+        yPos += 60;
+    });
+
+    // Footer
+    ctx.fillStyle = '#5a7896';
+    ctx.font = '16px Manrope';
+    ctx.fillText(`Generated by DevDetective | ${timestamp}`, 60, 1350);
+
+    // Download the canvas as image
+    canvas.toBlob(function(blob) {
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `${profileName}-devdetective-${timestamp}.${format}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }, `image/${format}`);
+}
+
+// Show verified badge function (can be called from main.js)
+function showVerifiedBadge(isVerified) {
+    const badge = document.getElementById('verifiedBadge');
+    const statusText = document.getElementById('verifyStatusText');
+    if (isVerified) {
+        badge.classList.remove('hidden');
+        statusText.textContent = '✓ Verified';
+        statusText.style.color = 'var(--good)';
+    } else {
+        badge.classList.add('hidden');
+        statusText.textContent = 'Not verified';
+    }
+}
+</script>
+
+</body>
+</html>

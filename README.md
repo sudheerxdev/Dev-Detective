@@ -55,26 +55,8 @@ It provides recruiter-style scoring, risk detection, roadmap generation, and dow
 └── .env.example
 ```
 
-## Environment Variables
 
-Set in Vercel Project Settings -> Environment Variables.
 
-### Required (recommended strongly)
-
-- `GITHUB_TOKEN`: GitHub token for higher rate limits and GraphQL pinned repos
-
-### Optional (for distributed rate limiting)
-
-- `KV_REST_API_URL`
-- `KV_REST_API_TOKEN`
-
-### Optional tuning
-
-- `RATE_LIMIT_MAX_REQUESTS` (default `30`)
-- `RATE_LIMIT_WINDOW_MS` (default `60000`)
-- `ANALYSIS_CACHE_TTL_MS` (default `300000`)
-- `GITHUB_CACHE_TTL_MS` (default `120000`)
-- `GITHUB_REQUEST_TIMEOUT_MS` (default `10000`)
 
 ## Deploy on Vercel
 
@@ -94,11 +76,7 @@ Vercel settings:
 
 ### Static frontend check
 
-```bash
-python3 -m http.server 5500
-```
 
-Open `http://localhost:5500`.
 
 ### Full Vercel-like local run (if Vercel CLI installed)
 
@@ -110,12 +88,7 @@ vercel dev
 
 - Input sanitization for usernames/URLs
 - API abuse protection with rate limiting
-- 429 responses when limits are exceeded
 - Graceful handling for invalid input, not found, network failures, and GitHub upstream failures
-- No sensitive token exposed to browser
-- Security headers configured via `vercel.json`
 
-## Notes
 
-- Commit consistency is approximated via `pushed_at` metadata.
-- Deep README/language checks are limited to top repos for performance and GitHub quota efficiency.
+
