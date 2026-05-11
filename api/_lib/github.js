@@ -188,12 +188,13 @@ async function fetchRepoDeepMeta(owner, repo, token, signal, partial) {
 }
 
 async function fetchContributionSignals(username, token, signal) {
-  const [prCount, issueCount] = await Promise.all([
+  const [prCount, issueCount, reviewCount] = await Promise.all([
     fetchSearchCountWithFallback(`author:${username} type:pr`, token, signal),
-    fetchSearchCountWithFallback(`author:${username} type:issue`, token, signal)
+    fetchSearchCountWithFallback(`author:${username} type:issue`, token, signal),
+    fetchSearchCountWithFallback(`reviewed-by:${username} type:pr`, token, signal)
   ]);
 
-  return { prCount, issueCount };
+  return { prCount, issueCount, reviewCount };
 }
 
 async function fetchSearchCountWithFallback(query, token, signal) {

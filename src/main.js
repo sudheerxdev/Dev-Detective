@@ -48,6 +48,8 @@ function init() {
 
   if (state.history[0]) {
     ui.profileInput.value = state.history[0];
+  } else {
+    ui.profileInput.value = "sudheerxdev";
   }
 }
 
@@ -69,8 +71,6 @@ function bindEvents() {
       renderCharts(state.analysisResult, state, ui);
     }
   });
-
-  ui.downloadReportBtn.addEventListener("click", downloadMarkdownReport);
 }
 
 async function handleAnalyze() {
