@@ -9,6 +9,7 @@ It provides recruiter-style scoring, risk detection, roadmap generation, and dow
 
 ## Highlights
 
+
 - Accepts GitHub username, `@username`, or profile URL
 - Uses real GitHub REST/GraphQL data through serverless API
 - Objective portfolio score (`0-100`) + weighted category subscores
